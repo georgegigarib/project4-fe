@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import {useState} from 'react'
 const numbers = [
@@ -65,92 +64,123 @@ const numbers = [
 ];
 
 
-
-
-
 const App = () => {
 
   const [mydisplay, setmydisplay] = useState('');
+  const [haypunto, sethaypunto] = useState(false);
+  const [negacount, setnegacount] = useState(0);
+  const [keyCounter, setkeyCounter] = useState(0);
 
   function padClick(e){
     let sym = e.target.innerText;
+    let last = mydisplay.length;
     if(sym === 'AC'){
       setmydisplay('')
+      sethaypunto(false);
+      setnegacount(0);
+      setkeyCounter(0);
     }
-    else if(sym === '.' && mydisplay.indexOf('.') !== -1){
-    }
-    else if(sym === '0' && mydisplay.indexOf('0') !== -1){
-    }
-    else if(
-            (sym === '-' || sym === '+' || sym === '*' || sym === '/') 
-            && 
-            (mydisplay.lastIndexOf('-') !== -1 || mydisplay.lastIndexOf('+') !== -1 || mydisplay.lastIndexOf('*') !== -1 || mydisplay.lastIndexOf('/') !== -1 )){
-    }
+      else if(sym === '.'){
+
+        if(haypunto){}
+
+        else{
+          var lasti = mydisplay.charAt(mydisplay.length -1);
+          console.log(lasti, 'el lasti');
+            if(lasti === ''){
+              setmydisplay(mydisplay + '0' + sym);
+              sethaypunto(true);
+            }
+              else if(lasti <= 9 && keyCounter === 1){
+                setmydisplay(mydisplay + sym);
+                sethaypunto(true);
+              }
+              else if(mydisplay !== '' && keyCounter === 0){
+                setmydisplay('0' + sym);
+                setkeyCounter(1);
+                sethaypunto(true);
+              }
+                else{
+                  setmydisplay(mydisplay + '0' + sym);
+                  sethaypunto(true);
+                  }
+            }
+      }
+      
+      else if(sym === '0' && mydisplay.indexOf('0') !== -1){}
+
+      else if(sym === '-'){
+        sethaypunto(false);
+          if(negacount < 3){
+            setkeyCounter(1);
+                if(negacount === 0){
+                setmydisplay(mydisplay + sym);
+                setnegacount(negacount + 1)
+                }
+                  else if( negacount === 1){
+                    setmydisplay(mydisplay.slice(0,-1) + '+');
+                    setnegacount(negacount + 1)
+                  }
+                  else if(negacount === 2 && last > 1){
+                    setmydisplay(mydisplay.slice(0, -1) + sym);
+                    setnegacount(1)
+                  }
+                    else{}
+                }
+        if (mydisplay.lastIndexOf('+-')=== last-2 && last >1){
+          setmydisplay(mydisplay.slice(0,-2) + '+');
+              setnegacount(negacount + 1)
+        }
+      }
+      else if((sym === '+' || sym === '*' || sym === '/') && mydisplay.length > 0){
+        sethaypunto(false);
+          console.log(mydisplay.lastIndexOf('+-'), last);
+        if(((mydisplay.lastIndexOf('+-')=== last-2) || (mydisplay.lastIndexOf('-+')=== last-2)
+        || (mydisplay.lastIndexOf('*-')=== last-2) || (mydisplay.lastIndexOf('*+')=== last-2)
+        || (mydisplay.lastIndexOf('/-')=== last-2) || (mydisplay.lastIndexOf('/+')=== last-2)) && last > 1){
+          setmydisplay(mydisplay.slice(0, -2) + sym);
+          console.log('el llega aqui 1');
+          setkeyCounter(1);
+      }
+        else {
+          if((mydisplay.lastIndexOf('-') === last-1  || mydisplay.lastIndexOf('+') === last-1 || 
+          mydisplay.lastIndexOf('*') === last-1 || mydisplay.lastIndexOf('/') === last-1 )){
+          setmydisplay(mydisplay.slice(0,-1) + sym);
+                    console.log('el llega aqui si 2');
+                    setkeyCounter(1);
+        }
+        else{
+          setmydisplay(mydisplay + sym);
+          console.log('el llega aqui 3');
+          setkeyCounter(1);
+        }
+      }
+      }
+
+      else if((sym === '+' || sym === '*' || sym === '/') && mydisplay.length === 0){}
+
+      else if(sym <= 9 && keyCounter === 0){
+        setmydisplay(sym);
+      setkeyCounter(1);
+      }
     else{
-      setmydisplay(mydisplay + sym)
+      setmydisplay(mydisplay + sym);
+    setnegacount(0);
     }
-    console.log(mydisplay);
+    
     }
     
     function calculate(){
-
-        var f = {
-          add: '+',
-          sub: '-',
-          div: '/',
-          mlt: '*',
-        };
-      
-        // Create array for Order of Operation and precedence
-        f.ooo = [
-          [
-            [f.mlt],
-            [f.div],
-          ],
-          [
-            [f.add],
-            [f.sub]
-          ]
-        ];
-      
-        var handleinput = mydisplay.replace(/[^0-9%^*/()\-+.]/g, ''); // clean up unnecessary characters
-        var output;
-        for (var i = 0, n = f.ooo.length; i < n; i++) {
-      
-          // Regular Expression to look for operators between floating numbers or integers
-          var re = new RegExp('(\\d+\\.?\\d*)([\\' + f.ooo[i].join('\\') + '])(\\d+\\.?\\d*)');
-          re.lastIndex = 0; // take precautions and reset re starting pos
-      
-          // Loop while there is still calculation for level of precedence
-          while (re.test(handleinput)) {
-            output = _calculate(RegExp.$1, RegExp.$2, RegExp.$3);
-            if (isNaN(output) || !isFinite(output)) 
-              return output; // exit early if not a number
-              handleinput = handleinput.replace(re, output);
-          }
-        }
-      
-        function _calculate(a, op, b) {
-          a = a * 1;
-          b = b * 1;
-          switch (op) {
-            case f.add:
-              return a + b;
-              break;
-            case f.sub: 
-            return a - b;
-              break;
-            case f.div:
-              return a / b;
-              break;
-            case f.mlt:
-              return a * b;
-              break;
-            default: {};
-          }
-        }
-        
-    setmydisplay(handleinput);
+       try {
+       var result = eval(mydisplay);
+       setmydisplay(result.toString());
+       setkeyCounter(0);
+       sethaypunto(false);
+       setnegacount(0);
+       console.log(result);
+       } catch (error) {
+         console.log(error);
+       }
 
     }
 
