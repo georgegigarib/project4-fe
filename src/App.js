@@ -1,85 +1,25 @@
 import './App.css';
-import {useState} from 'react'
-const numbers = [
-  
-
-  {value:7,
-  id:'seven',
-  class:'numbers'   },
-  {value:8,
-  id:'eight',
-  class:'numbers'   },
-  {value:9,
-  id:'nine',
-  class:'numbers'   },
-
-  {value:'*',
-  id:'multiply',
-  class:'operators'   },
-
-  {value:4,
-  id:'four',
-  class:'numbers'   },
-  {value:5,
-  id:'five',
-  class:'numbers'   },
-  {value:6,
-  id:'six',
-  class:'numbers'   },
-    
-  {value:'/',
-  id:'divide',
-  class:'operators'   },
-    
-  {value:1,
-  id:'one',
-  class:'numbers'   },
-  {value:2,
-  id:'two',
-  class:'numbers'   },
-  {value:3,
-  id:'three',
-  class:'numbers'   },
-
-  {value:'-',
-  id:'substract',
-  class:'operators'   },
-
-  {value:'.',
-  id:'decimal',
-  class:'numbers'   },
-
-  {value:0,
-  id:'zero',
-  class:'zero'   },
-
-  {value:'AC',
-  id:'clear',
-  class:'ac'   },
-
-  {value:'+',
-  id:'add',
-  class:'operators'   },
-
-];
+import {useState} from 'react';
+import numbers from './numbers';
 
 
-const App = () => {
+  const App = () => {
 
-  const [mydisplay, setmydisplay] = useState('');
-  const [haypunto, sethaypunto] = useState(false);
-  const [negacount, setnegacount] = useState(0);
-  const [keyCounter, setkeyCounter] = useState(0);
+    const [mydisplay, setmydisplay] = useState('');
+    const [haypunto, sethaypunto] = useState(false);
+    const [negacount, setnegacount] = useState(0);
+    const [keyCounter, setkeyCounter] = useState(0);
 
   function padClick(e){
-    let sym = e.target.innerText;
-    let last = mydisplay.length;
-    if(sym === 'AC'){
-      setmydisplay('')
-      sethaypunto(false);
-      setnegacount(0);
-      setkeyCounter(0);
-    }
+      let sym = e.target.innerText;
+      let last = mydisplay.length;
+        if(sym === 'AC'){
+          setmydisplay('')
+          sethaypunto(false);
+          setnegacount(0);
+          setkeyCounter(0);
+        }
+
       else if(sym === '.'){
 
         if(haypunto){}
@@ -161,27 +101,26 @@ const App = () => {
 
       else if(sym <= 9 && keyCounter === 0){
         setmydisplay(sym);
-      setkeyCounter(1);
+        setkeyCounter(1);
       }
     else{
       setmydisplay(mydisplay + sym);
-    setnegacount(0);
+      setnegacount(0);
     }
     
     }
     
     function calculate(){
        try {
-       var result = eval(mydisplay);
-       setmydisplay(result.toString());
-       setkeyCounter(0);
-       sethaypunto(false);
-       setnegacount(0);
-       console.log(result);
-       } catch (error) {
-         console.log(error);
-       }
-
+          var result = eval(mydisplay);
+          setmydisplay(result.toString());
+          setkeyCounter(0);
+          sethaypunto(false);
+          setnegacount(0);
+          console.log(result);
+        } catch(error) {
+            console.log(error);
+          }
     }
 
 
